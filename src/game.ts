@@ -1,24 +1,5 @@
 /// --- Set up a system ---
 
-class RotatorSystem {
-  // this group will contain every entity that has a Transform component
-  group = engine.getComponentGroup(Transform)
-
-  update(dt: number) {
-    // iterate over the entities of the group
-    for (let entity of this.group.entities) {
-      // get the Transform component of the entity
-      const transform = entity.getComponent(Transform)
-
-      // mutate the rotation
-      transform.rotate(Vector3.Up(), dt * 10)
-    }
-  }
-}
-
-// Add a new instance of the system to the engine
-engine.addSystem(new RotatorSystem())
-
 /// --- Spawner function ---
 
 function spawnCube(x: number, y: number, z: number) {
@@ -37,15 +18,48 @@ function spawnCube(x: number, y: number, z: number) {
   return cube
 }
 
-/// --- Spawn a cube ---
+/// --- Spawn cubes ---
 
-const cube = spawnCube(8, 1, 8)
+//Read Cube
+const readCube = spawnCube(6, 1, 8)
 
-cube.addComponent(
+ const readEntity = new Entity()
+const readText = new TextShape("Read dB. Click Cube")
+readText.fontSize = 2
+
+readText.color = Color3.Black()
+readEntity.addComponent(readText)
+readEntity.addComponent(new Transform({position: new Vector3(0,1,0)}))
+
+readEntity.setParent(readCube)
+
+
+readCube.addComponent(
   new OnClick(() => {
-    cube.getComponent(Transform).scale.z *= 1.1
-    cube.getComponent(Transform).scale.x *= 0.9
+    log('Read from database:')
+    log('show output here!')
+  })
+)
 
-    spawnCube(Math.random() * 8 + 1, Math.random() * 8, Math.random() * 8 + 1)
+
+//Write Cube
+const writeCube = spawnCube(9, 1, 8)
+
+const writeEntity = new Entity()
+const writeText = new TextShape("Write dB: Click Cube")
+writeText.fontSize = 2
+writeText.color = Color3.Blue()
+writeEntity.addComponent(writeText)
+writeEntity.addComponent(new Transform({position: new Vector3(0,1,0)}))
+
+writeEntity.setParent(writeCube)
+
+let recId:number = 0
+
+writeCube.addComponent(
+  new OnClick(() => {
+    recId ++
+    log('Write to database: record id = '+ recId)
+    
   })
 )
